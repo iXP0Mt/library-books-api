@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "app\\": "app/"
+    }
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.86"
+  },
+  "require": {
+    "bramus/router": "^1.6"
+  }
+}
