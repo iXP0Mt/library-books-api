@@ -8,6 +8,7 @@
     "friendsofphp/php-cs-fixer": "^3.86"
   },
   "require": {
-    "bramus/router": "^1.6"
+    "bramus/router": "^1.6",
+    "ext-pdo": "*"
   }
 }
