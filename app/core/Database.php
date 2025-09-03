@@ -7,7 +7,7 @@ use PDOException;
 
 class Database
 {
-    private static function pdo(): PDO
+    public static function pdo(): PDO
     {
         static $pdo;
         if(!$pdo)
