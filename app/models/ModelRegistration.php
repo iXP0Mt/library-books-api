@@ -6,6 +6,7 @@ use app\core\Database;
 use app\core\Model;
 use app\util\JwtService;
 use Firebase\JWT\JWT;
+use PDOException;
 
 class ModelRegistration extends Model
 {
@@ -78,7 +79,16 @@ class ModelRegistration extends Model
     {
         $hashPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
-        $result = Database::insertUser($data['login'], $hashPassword);
+        try {
+            $result = Database::insertUser($data['login'], $hashPassword);
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
 
         if($result === 0) {
             $output = [
@@ -86,14 +96,6 @@ class ModelRegistration extends Model
                 "message" => "Login already taken"
             ];
             return false;
-        }
-
-        if($result === null) {
-            $output = [
-              "status" => "Error",
-              "message" => "Server error"
-            ];
-            return null;
         }
 
 
