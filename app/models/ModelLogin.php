@@ -5,6 +5,8 @@ namespace app\models;
 use app\core\Database;
 use app\core\Model;
 use app\util\Constants;
+use app\util\JwtService;
+use Firebase\JWT\JWT;
 use PDOException;
 
 class ModelLogin extends Model
@@ -91,6 +93,7 @@ class ModelLogin extends Model
 
         $output = [
             "status" => "OK",
+            "token" => JwtService::generateToken($user->id),
             "user_info" => [
                 "user_id" => $user->id,
             ]

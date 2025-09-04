@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\core\Database;
 use app\core\Model;
+use app\util\JwtService;
+use Firebase\JWT\JWT;
 
 class ModelRegistration extends Model
 {
@@ -94,13 +96,14 @@ class ModelRegistration extends Model
             return null;
         }
 
+
         $output = [
             "status" => "OK",
+            "token" => JwtService::generateToken($result),
             "user_info" => [
                 "user_id" => $result
             ]
         ];
-
         return true;
     }
 }
