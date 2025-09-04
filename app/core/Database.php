@@ -14,12 +14,8 @@ class Database
         if(!$pdo)
         {
             $dsn = 'mysql:dbname='.$_ENV['DB_NAME'].';host='.$_ENV['DB_HOST'].';charset=utf8';
-            try {
-                $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                error_log("ERROR: " . $e->getMessage());
-            }
+            $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         return $pdo;
     }
