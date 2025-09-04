@@ -57,4 +57,21 @@ class Database
 
         return new UserDTO($row['user_id'], $row['login'], $row['password']);
     }
+
+    /**
+     * @return UserDTO[]
+     */
+    public static function selectUsers(): array
+    {
+        $stmt = self::pdo()->query('SELECT user_id, login FROM users ORDER BY user_id');
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = new UserDTO($row['user_id'], $row['login'], "");
+        }
+
+        return $users;
+    }
 }
