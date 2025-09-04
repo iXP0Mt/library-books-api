@@ -2,6 +2,7 @@
 
 namespace app\core;
 
+use app\dto\UserDTO;
 use PDO;
 use PDOException;
 
@@ -42,5 +43,19 @@ class Database
             error_log("ERROR: " . $e->getMessage());
             return null;
         }
+    }
+
+    public static function selectUserByLogin(string $login): ?UserDTO
+    {
+        $stmt = self::pdo()->prepare('SELECT user_id, login, password FROM users WHERE login = :login');
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($row === false) {
+            return null;
+        }
+
+        return new UserDTO($row['user_id'], $row['login'], $row['password']);
     }
 }
