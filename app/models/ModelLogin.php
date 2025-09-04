@@ -11,8 +11,16 @@ use PDOException;
 
 class ModelLogin extends Model
 {
-    public function isValid(array $input, array &$output): bool
+    public function isValid($input, array &$output): bool
     {
+        if(!is_array($input)) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
         if(
             !isset($input['login']) ||
             !isset($input['password'])

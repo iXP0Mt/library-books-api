@@ -10,8 +10,16 @@ use PDOException;
 
 class ModelRegistration extends Model
 {
-    public function isValid(array $data, array &$output): bool
+    public function isValid($data, array &$output): bool
     {
+        if(!is_array($data)) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
         if(
             !isset($data['login']) ||
             !isset($data['password']) ||
