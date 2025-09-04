@@ -13,10 +13,9 @@ class Database
         static $pdo;
         if(!$pdo)
         {
-            $config = require 'config/database.php';
-            $dsn = 'mysql:dbname='.$config['db_name'].';host='.$config['db_host'].';charset=utf8';
+            $dsn = 'mysql:dbname='.$_ENV['DB_NAME'].';host='.$_ENV['DB_HOST'].';charset=utf8';
             try {
-                $pdo = new PDO($dsn, $config['db_user'], $config['db_pass']);
+                $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 error_log("ERROR: " . $e->getMessage());
