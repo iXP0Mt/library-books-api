@@ -2,6 +2,7 @@
 
 namespace app\core;
 
+use app\dto\BookDTO;
 use app\dto\UserDTO;
 use PDO;
 use PDOException;
@@ -87,6 +88,26 @@ class Database
         }
 
         return true;
+    }
+
+    /**
+     * @param int $ownerUserId
+     * @return BookDTO[]
+     */
+    public static function selectBooksByOwner(int $ownerUserId): array
+    {
+        $stmt = self::pdo()->prepare("SELECT book_id, title FROM books WHERE owner_user_id = :owner_user_id AND is_deleted = '0';");
+        $stmt->bindValue(':owner_user_id', $ownerUserId);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $books = [];
+        foreach ($rows as $row) {
+            $books[] = new BookDTO($row['book_id'], $row['title']);
+        }
+
+        return $books;
     }
 
     private static function isDuplicateEntry(PDOException $e): bool
