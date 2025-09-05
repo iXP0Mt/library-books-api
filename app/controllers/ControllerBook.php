@@ -31,4 +31,25 @@ class ControllerBook extends Controller
 
         View::renderToJson($output, HttpStatus::OK);
     }
+
+    public function createBook(): void
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $output = [];
+
+        $data = $this->model->validateCreateBook($input, $output);
+        if($data === null) {
+            View::renderToJson($output, HttpStatus::BAD_REQUEST);
+            return;
+        }
+
+        $isSuccess = $this->model->createBook($data, $output);
+        if($isSuccess === null) {
+            View::renderToJson($output, HttpStatus::SERVER_ERROR);
+            return;
+        }
+
+        View::renderToJson($output, HttpStatus::OK);
+    }
 }

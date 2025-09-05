@@ -110,6 +110,17 @@ class Database
         return $books;
     }
 
+    public static function insertBook(BookDTO $book): true
+    {
+        $stmt = self::pdo()->prepare('INSERT INTO books (owner_user_id, title, text) VALUES (:owner_user_id, :title, :text);');
+        $stmt->bindValue(':owner_user_id', $book->ownerUserId);
+        $stmt->bindValue(':title', $book->title);
+        $stmt->bindValue(':text', $book->text);
+        $stmt->execute();
+
+        return true;
+    }
+
     private static function isDuplicateEntry(PDOException $e): bool
     {
         return $e->errorInfo[1] == 1062;

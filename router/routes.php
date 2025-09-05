@@ -14,6 +14,7 @@ $router->mount('/api/v1', function() use ($router) {
     $router->post("/users/{granteeUserId}/share", 'ControllerUser@share');
 
     $router->get("/user/books", 'ControllerBook@userBooks');
+    $router->post("/user/books/create", 'ControllerBook@createBook');
 });
 
 $router->run();
