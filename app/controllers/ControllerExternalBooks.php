@@ -23,7 +23,12 @@ class ControllerExternalBooks extends Controller
             return;
         }
 
-        $this->model->externalSearch($this->model->getSearchQuery(), $output);
+        $isSuccess = $this->model->externalSearch($this->model->getSearchQuery(), $output);
+        if(!$isSuccess) {
+            View::renderToJson($output, HttpStatus::NOT_FOUND);
+            return;
+        }
+
         View::renderToJson($output, HttpStatus::OK);
     }
 

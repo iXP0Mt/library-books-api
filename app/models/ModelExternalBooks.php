@@ -90,6 +90,9 @@ class ModelExternalBooks extends Model
         if(!$json) return null;
 
         $data = json_decode($json, true);
+        if(!isset($data['bookData'])) {
+            return null;
+        }
 
         return new ExternalBookDTO(
             externalBookId: $externalBookId,
@@ -134,6 +137,10 @@ class ModelExternalBooks extends Model
         $booksMIF = $this->searchMIF($q);
 
         if($booksGoogleApi === null && $booksMIF === null) {
+            $output = [
+                "status" => "Error",
+                "message" => "Results is empty"
+            ];
             return false;
         }
 
@@ -158,6 +165,9 @@ class ModelExternalBooks extends Model
         if(!$json) return null;
 
         $data = json_decode($json, true);
+        if(!isset($data['items'])) {
+            return null;
+        }
 
         return array_map(fn($item) => new ExternalBookDTO(
             externalBookId: $item['id'],
@@ -177,6 +187,9 @@ class ModelExternalBooks extends Model
         if(!$json) return null;
 
         $data = json_decode($json, true);
+        if(!isset($data['total']) || $data['total'] == 0) {
+            return null;
+        }
 
         return array_map(fn($item) => new ExternalBookDTO(
             externalBookId: $item['id'],
