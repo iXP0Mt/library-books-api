@@ -69,4 +69,33 @@ class Database
 
         return $users;
     }
+
+    public static function insertShare(int $ownerUserId, int $granteeUserId): ?bool
+    {
+        try {
+            $stmt = self::pdo()->prepare('INSERT INTO shares (owner_user_id, grantee_user_id) VALUES (:owner_user_id, :grantee_user_id);');
+            $stmt->bindValue(':owner_user_id', $ownerUserId, PDO::PARAM_INT);
+            $stmt->bindValue(':grantee_user_id', $granteeUserId, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            if(self::isDuplicateEntry($e)) {
+                return false;
+            } else if(self::isConstraintFailure($e)) {
+                return null;
+            }
+            throw $e;
+        }
+
+        return true;
+    }
+
+    private static function isDuplicateEntry(PDOException $e): bool
+    {
+        return $e->errorInfo[1] == 1062;
+    }
+
+    private static function isConstraintFailure(PDOException $e): bool
+    {
+        return $e->errorInfo[1] == 1452;
+    }
 }

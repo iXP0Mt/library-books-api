@@ -11,6 +11,7 @@ $router->mount('/api/v1', function() use ($router) {
     $router->before("GET|POST", "/(?!auth).*", 'ControllerMiddleware@index');
 
     $router->get("/users", 'ControllerUser@listUsers');
+    $router->post("/users/{granteeUserId}/share", 'ControllerUser@share');
 });
 
 $router->run();
