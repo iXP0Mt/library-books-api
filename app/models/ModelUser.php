@@ -92,7 +92,7 @@ class ModelUser extends Model
             return false;
         }
 
-        $output = array_map(
+        $output['users'] = array_map(
             fn(UserDTO $user) => [
                 "user_id" => $user->id,
                 "login" => $user->login
