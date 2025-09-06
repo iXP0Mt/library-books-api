@@ -179,6 +179,21 @@ class Database
         return true;
     }
 
+    public static function softDeleteUsersBook(BookDTO $deletingBook): bool
+    {
+        $stmt = self::pdo()->prepare("UPDATE books SET is_deleted = '1' WHERE book_id = :book_id AND owner_user_id = :owner_user_id AND is_deleted = '0';");
+        $stmt->bindValue(':book_id', $deletingBook->bookId);
+        $stmt->bindValue(':owner_user_id', $deletingBook->ownerUserId);
+        $stmt->execute();
+
+        $affectedRows = $stmt->rowCount();
+        if($affectedRows == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     private static function isDuplicateEntry(PDOException $e): bool
     {
         return $e->errorInfo[1] == 1062;

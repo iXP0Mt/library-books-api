@@ -98,4 +98,28 @@ class ControllerBook extends Controller
 
         View::renderToJson($output, HttpStatus::OK);
     }
+
+    public function deleteBook(): void
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $output = [];
+
+        $isSuccess = $this->model->deleteBookValid($input, $output);
+        if($isSuccess === false) {
+            View::renderToJson($output, HttpStatus::BAD_REQUEST);
+            return;
+        }
+
+        $isSuccess = $this->model->deleteUsersBook($input, $output);
+        if($isSuccess === null) {
+            View::renderToJson($output, HttpStatus::SERVER_ERROR);
+            return;
+        } else if ($isSuccess === false) {
+            View::renderToJson($output, HttpStatus::BAD_REQUEST);
+            return;
+        }
+
+        View::renderToJson($output, HttpStatus::OK);
+    }
 }

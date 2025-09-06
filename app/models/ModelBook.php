@@ -305,4 +305,69 @@ class ModelBook extends Model
         ];
         return true;
     }
+
+
+    public function deleteBookValid($input, array &$output): bool
+    {
+        if(!is_array($input)) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        if(
+            !isset($input['book_id'])
+        ) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        if(filter_var($input['book_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        return true;
+    }
+
+    public function deleteUsersBook(array $input, array &$output): ?bool
+    {
+        $deletingBook = new BookDTO(
+            bookId: $input['book_id'],
+            ownerUserId: CurrentUser::getUserId(),
+        );
+
+        try {
+            $isDelete = Database::softDeleteUsersBook($deletingBook);
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
+
+        if(!$isDelete) {
+            $output = [
+                "status" => "Error",
+                "message" => "Not found or access denied"
+            ];
+            return false;
+        }
+
+        $output = [
+            "status" => "OK",
+            "message" => "Book deleted"
+        ];
+        return true;
+    }
 }
