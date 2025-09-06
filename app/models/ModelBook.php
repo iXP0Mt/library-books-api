@@ -268,6 +268,14 @@ class ModelBook extends Model
             return false;
         }
 
+        if(strlen($title) > Constants::MAX_BOOK_TITLE_LENGTH) {
+            $output = [
+                "status" => "Error",
+                "message" => "Title too long"
+            ];
+            return false;
+        }
+
         return true;
     }
 
