@@ -446,7 +446,7 @@ class ModelBook extends Model
             return null;
         }
 
-        $output = array_map(fn (BookDTO $book) => [
+        $output['books'] = array_map(fn (BookDTO $book) => [
             "book_id" => $book->bookId,
             "title" => $book->title,
             "text" => $book->text,
