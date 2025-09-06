@@ -15,6 +15,7 @@ $router->mount('/api/v1', function() use ($router) {
 
     $router->get("/user/books", 'ControllerBook@userBooks');
     $router->post("/user/books/create", 'ControllerBook@createBook');
+    $router->get("/books/{bookId}", 'ControllerBook@getUsersBook');
 
     $router->get("/external/search", 'ControllerExternalBooks@search');
     $router->post("/external/save", 'ControllerExternalBooks@save');

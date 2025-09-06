@@ -52,4 +52,26 @@ class ControllerBook extends Controller
 
         View::renderToJson($output, HttpStatus::OK);
     }
+
+    public function getUsersBook($bookId): void
+    {
+        $output = [];
+
+        $isSuccess = $this->model->getBookInputValid($bookId, $output);
+        if(!$isSuccess) {
+            View::renderToJson($output, HttpStatus::BAD_REQUEST);
+            return;
+        }
+
+        $isSuccess = $this->model->getUsersBookById((int)$bookId, $output);
+        if($isSuccess === null) {
+            View::renderToJson($output, HttpStatus::SERVER_ERROR);
+            return;
+        } else if($isSuccess === false) {
+            View::renderToJson($output, HttpStatus::NOT_FOUND);
+            return;
+        }
+
+        View::renderToJson($output, HttpStatus::OK);
+    }
 }

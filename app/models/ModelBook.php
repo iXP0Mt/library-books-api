@@ -182,4 +182,45 @@ class ModelBook extends Model
 
         return null;
     }
+
+    public function getBookInputValid($input, array &$output): bool
+    {
+        if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getUsersBookById(int $bookId, array &$output): ?bool
+    {
+        try {
+            $book = Database::selectUsersBookByBookId($bookId, CurrentUser::getUserId());
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
+
+        if($book === false) {
+            $output = [
+                "status" => "Error",
+                "message" => "Book not found"
+            ];
+            return false;
+        }
+
+        $output = [
+            "title" => $book->title,
+            "text" => $book->text,
+        ];
+        return true;
+    }
 }

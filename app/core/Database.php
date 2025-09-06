@@ -121,6 +121,37 @@ class Database
         return true;
     }
 
+    public static function selectUsersBookByBookId(int $bookId, int $ownerUserId): BookDTO|false
+    {
+        $stmt = self::pdo()->prepare('
+            SELECT b.title, b.text 
+            FROM books b
+            WHERE b.book_id = :book_id 
+	            AND (
+	                b.owner_user_id = :owner_user_id 
+                        OR EXISTS(
+                            SELECT 1 
+                            FROM shares s
+                            WHERE s.owner_user_id = b.owner_user_id
+                                AND s.grantee_user_id
+                        )
+	                );
+        ');
+        $stmt->bindValue(':book_id', $bookId);
+        $stmt->bindValue(':owner_user_id', $ownerUserId);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($row === false) {
+            return false;
+        }
+
+        return new BookDTO(
+            title: $row['title'],
+            text: $row['text'],
+        );
+    }
+
     private static function isDuplicateEntry(PDOException $e): bool
     {
         return $e->errorInfo[1] == 1062;
