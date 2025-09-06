@@ -371,6 +371,40 @@ class ModelBook extends Model
         return true;
     }
 
+    public function restoreBookValid($input, array &$output): bool
+    {
+        // Та же логика
+        return $this->deleteBookValid($input, $output);
+    }
+
+    public function restoreDeletedBook(array $input, array &$output): ?bool
+    {
+        try {
+            $isRestore = Database::restoreDeletedBook($input['book_id'], CurrentUser::getUserId());
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
+
+        if(!$isRestore) {
+            $output = [
+                "status" => "Error",
+                "message" => "Not found or access denied"
+            ];
+            return false;
+        }
+
+        $output = [
+            "status" => "OK",
+            "message" => "Book restored"
+        ];
+        return true;
+    }
+
     public function getSharedBooksValid($input, array &$output): bool
     {
         if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {

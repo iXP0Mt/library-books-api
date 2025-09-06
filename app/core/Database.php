@@ -197,6 +197,21 @@ class Database
         return true;
     }
 
+    public static function restoreDeletedBook(int $bookId, int $ownerUserId): bool
+    {
+        $stmt = self::pdo()->prepare("UPDATE books SET is_deleted = '0' WHERE book_id = :book_id AND owner_user_id = :owner_user_id AND is_deleted = '1';");
+        $stmt->bindValue(':book_id', $bookId);
+        $stmt->bindValue(':owner_user_id', $ownerUserId);
+        $stmt->execute();
+
+        $affectedRows = $stmt->rowCount();
+        if($affectedRows == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @param int $ownerId
      * @param int $granteeUserId
