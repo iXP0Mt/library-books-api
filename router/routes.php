@@ -18,6 +18,7 @@ $router->mount('/api/v1', function() use ($router) {
     $router->get("/books/{bookId}", 'ControllerBook@getUsersBook');
     $router->put("/user/books/save", 'ControllerBook@saveBook');
     $router->delete("/user/books/delete", 'ControllerBook@deleteBook');
+    $router->get("/users/{userId}/books", 'ControllerBook@getSharedBooksByOwner');
 
     $router->get("/external/search", 'ControllerExternalBooks@search');
     $router->post("/external/save", 'ControllerExternalBooks@save');

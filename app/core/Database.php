@@ -197,6 +197,40 @@ class Database
         return true;
     }
 
+    /**
+     * @param int $ownerId
+     * @param int $granteeUserId
+     * @return BookDTO[]
+     */
+    public static function selectShareBooks(int $ownerId, int $granteeUserId): array
+    {
+        $stmt = self::pdo()->prepare("
+        SELECT b.book_id, b.title, b.text 
+            FROM books b
+            WHERE b.owner_user_id = :owner_user_id
+              AND b.is_deleted = '0'
+	            AND (
+                    EXISTS(
+                        SELECT 1 
+                        FROM shares s
+                        WHERE s.owner_user_id = b.owner_user_id
+                            AND s.grantee_user_id = :grantee_user_id
+                    )
+                );
+        ");
+        $stmt->bindValue(':owner_user_id', $ownerId);
+        $stmt->bindValue(':grantee_user_id', $granteeUserId);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => new BookDTO(
+            bookId: $row['book_id'],
+            title: $row['title'],
+            text: $row['text'],
+        ), $rows);
+    }
+
     private static function isDuplicateEntry(PDOException $e): bool
     {
         return $e->errorInfo[1] == 1062;

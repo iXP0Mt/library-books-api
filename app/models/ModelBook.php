@@ -370,4 +370,46 @@ class ModelBook extends Model
         ];
         return true;
     }
+
+    public function getSharedBooksValid($input, array &$output): bool
+    {
+        if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        if(CurrentUser::getUserId() == $input) {
+            $output = [
+                "status" => "Error",
+                "message" => "Need to pass id another user"
+            ];
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getSharedBooksByOwner(int $ownerId, array &$output): ?true
+    {
+        try {
+            $sharedBooks = Database::selectShareBooks($ownerId, CurrentUser::getUserId());
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
+
+        $output = array_map(fn(BookDTO $book) => [
+            "book_id" => $book->bookId,
+            "title" => $book->title,
+            "text" => $book->text,
+        ], $sharedBooks);
+        return true;
+    }
 }

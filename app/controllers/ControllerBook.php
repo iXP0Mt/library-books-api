@@ -122,4 +122,23 @@ class ControllerBook extends Controller
 
         View::renderToJson($output, HttpStatus::OK);
     }
+
+    public function getSharedBooksByOwner($userId): void
+    {
+        $output = [];
+
+        $isSuccess = $this->model->getSharedBooksValid($userId, $output);
+        if(!$isSuccess) {
+            View::renderToJson($output, HttpStatus::BAD_REQUEST);
+            return;
+        }
+
+        $isSuccess = $this->model->getSharedBooksByOwner((int)$userId, $output);
+        if($isSuccess === null) {
+            View::renderToJson($output, HttpStatus::SERVER_ERROR);
+            return;
+        }
+
+        View::renderToJson($output, HttpStatus::OK);
+    }
 }
