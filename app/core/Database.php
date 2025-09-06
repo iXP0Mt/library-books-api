@@ -4,6 +4,7 @@ namespace app\core;
 
 use app\dto\BookDTO;
 use app\dto\UserDTO;
+use app\util\CurrentUser;
 use PDO;
 use PDOException;
 
@@ -150,6 +151,32 @@ class Database
             title: $row['title'],
             text: $row['text'],
         );
+    }
+
+    public static function updateBook(BookDTO $editedBook): bool
+    {
+        $stmt = self::pdo()->prepare('
+            UPDATE books b
+            SET 
+	            b.title = :edited_title,
+                b.text = :edited_text
+            WHERE
+	            b.book_id = :book_id
+            AND 
+                b.owner_user_id = :owner_user_id;
+        ');
+        $stmt->bindValue(':edited_title', $editedBook->title);
+        $stmt->bindValue(':edited_text', $editedBook->text);
+        $stmt->bindValue(':book_id', $editedBook->bookId);
+        $stmt->bindValue(':owner_user_id', $editedBook->ownerUserId);
+        $stmt->execute();
+
+        $affectedRows = $stmt->rowCount();
+        if($affectedRows == 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private static function isDuplicateEntry(PDOException $e): bool

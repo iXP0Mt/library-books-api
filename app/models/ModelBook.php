@@ -223,4 +223,86 @@ class ModelBook extends Model
         ];
         return true;
     }
+
+    public function saveBookInputValid($input, array &$output): bool
+    {
+        if(!is_array($input)) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        if(
+            !isset($input['book_id']) ||
+            !isset($input["title"]) ||
+            !isset($input["text"])
+        ) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        $book_id = trim($input['book_id']);
+        $title = trim($input['title']);
+
+        if(
+            empty($book_id) ||
+            empty($title)
+        ) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        if(filter_var($book_id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+            $output = [
+                "status" => "Error",
+                "message" => "Incorrect input data"
+            ];
+            return false;
+        }
+
+        return true;
+    }
+
+    public function saveEditedBook($input, array &$output): ?bool
+    {
+        $editedBook = new BookDTO(
+            bookId: $input['book_id'],
+            title: $input['title'],
+            ownerUserId: CurrentUser::getUserId(),
+            text: $input['text']
+        );
+
+        try {
+            $isUpdate = Database::updateBook($editedBook);
+        } catch (PDOException $e) {
+            error_log("ERROR: " . $e->getMessage());
+            $output = [
+                "status" => "Error",
+                "message" => "Server error"
+            ];
+            return null;
+        }
+
+        if(!$isUpdate) {
+            $output = [
+                "status" => "Error",
+                "message" => "No changes applied or access denied"
+            ];
+            return false;
+        }
+
+        $output = [
+            "status" => "OK",
+            "message" => "Book updated"
+        ];
+        return true;
+    }
 }
