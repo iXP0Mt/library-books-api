@@ -13,7 +13,7 @@ class ModelLogin extends Model
 {
     public function isValid($input, array &$output): bool
     {
-        if(!is_array($input)) {
+        if (!is_array($input)) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -21,7 +21,7 @@ class ModelLogin extends Model
             return false;
         }
 
-        if(
+        if (
             !isset($input['login']) ||
             !isset($input['password'])
         ) {
@@ -35,7 +35,7 @@ class ModelLogin extends Model
         $login = trim($input['login']);
         $password = trim($input['password']);
 
-        if(
+        if (
             empty($login) ||
             empty($password)
         ) {
@@ -46,7 +46,7 @@ class ModelLogin extends Model
             return false;
         }
 
-        if(strlen($login) < Constants::MIN_LOGIN_LENGTH || strlen($login) > Constants::MAX_LOGIN_LENGTH) {
+        if (strlen($login) < Constants::MIN_LOGIN_LENGTH || strlen($login) > Constants::MAX_LOGIN_LENGTH) {
             $output =  [
                 "status" => "Error",
                 "message" => sprintf("Login must be between %d and %d characters", Constants::MIN_LOGIN_LENGTH, Constants::MAX_LOGIN_LENGTH)
@@ -54,7 +54,7 @@ class ModelLogin extends Model
             return false;
         }
 
-        if(!preg_match("/^[a-zA-Z0-9]*$/", $login)) {
+        if (!preg_match("/^[a-zA-Z0-9]*$/", $login)) {
             $output =  [
                 "status" => "Error",
                 "message" => "Login must be contain only letters, numbers and underscores"
@@ -62,7 +62,7 @@ class ModelLogin extends Model
             return false;
         }
 
-        if(strlen($password) < Constants::MIN_PASSWORD_LENGTH || strlen($password) > Constants::MAX_PASSWORD_LENGTH) {
+        if (strlen($password) < Constants::MIN_PASSWORD_LENGTH || strlen($password) > Constants::MAX_PASSWORD_LENGTH) {
             $output =  [
                 "status" => "Error",
                 "message" => sprintf("Password must be between %d and %d characters", Constants::MIN_PASSWORD_LENGTH, Constants::MAX_PASSWORD_LENGTH)
@@ -83,7 +83,7 @@ class ModelLogin extends Model
             return null;
         }
 
-        if($user === null) {
+        if ($user === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Login or password is incorrect"
@@ -91,7 +91,7 @@ class ModelLogin extends Model
             return false;
         }
 
-        if(!password_verify($input['password'], $user->hashPassword)) {
+        if (!password_verify($input['password'], $user->hashPassword)) {
             $output = [
                 "status" => "Error",
                 "message" => "Login or password is incorrect"

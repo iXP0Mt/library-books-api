@@ -16,7 +16,7 @@ class ModelBook extends Model
     {
         $ownerUserId = CurrentUser::getUserId();
 
-        if($ownerUserId === null) {
+        if ($ownerUserId === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Server error"
@@ -40,7 +40,7 @@ class ModelBook extends Model
             return false;
         }
 
-        $output["books"] = array_map(fn(BookDTO $book) => [
+        $output["books"] = array_map(fn (BookDTO $book) => [
             "book_id" => $book->bookId,
             "title" => $book->title,
         ], $userBooks);
@@ -50,13 +50,13 @@ class ModelBook extends Model
 
     public function validateCreateBook($phpInput, array &$output): ?array
     {
-        if($this->validCreateBookAsJSON($phpInput)) {
+        if ($this->validCreateBookAsJSON($phpInput)) {
             $data = [
                 "title" => $phpInput['title'],
                 "text" => $phpInput['text']
             ];
-        } else if($this->validCreateBookAsFormData()) {
-            if($_FILES['text']['error'] !== UPLOAD_ERR_OK) {
+        } elseif ($this->validCreateBookAsFormData()) {
+            if ($_FILES['text']['error'] !== UPLOAD_ERR_OK) {
                 return [
                     "status" => "Error",
                     "message" => match($_FILES['text']['error']) {
@@ -79,7 +79,7 @@ class ModelBook extends Model
             return null;
         }
 
-        if(strlen($data['title']) > Constants::MAX_BOOK_TITLE_LENGTH) {
+        if (strlen($data['title']) > Constants::MAX_BOOK_TITLE_LENGTH) {
             $output = [
                 "status" => "Error",
                 "message" => "Title too long"
@@ -118,11 +118,11 @@ class ModelBook extends Model
 
     private function validCreateBookAsJSON($phpInput): bool
     {
-        if(!is_array($phpInput)) {
+        if (!is_array($phpInput)) {
             return false;
         }
 
-        if(
+        if (
             !isset($phpInput["title"]) ||
             !isset($phpInput["text"])
         ) {
@@ -132,7 +132,7 @@ class ModelBook extends Model
         $title = trim($phpInput["title"]);
         $text = trim($phpInput["text"]);
 
-        if(
+        if (
             empty($title) ||
             empty($text)
         ) {
@@ -144,7 +144,7 @@ class ModelBook extends Model
 
     private function validCreateBookAsFormData(): bool
     {
-        if(
+        if (
             !isset($_POST["title"]) ||
             !isset($_FILES["text"])
         ) {
@@ -153,7 +153,7 @@ class ModelBook extends Model
 
         $title = trim($_POST["title"]);
 
-        if(
+        if (
             empty($title)
         ) {
             return false;
@@ -164,10 +164,10 @@ class ModelBook extends Model
 
     private function getTextForCreateBook(array $data): ?string
     {
-        if(isset($data['text_url'])) {
+        if (isset($data['text_url'])) {
             $text = '';
             $filePointer = fopen($data['text_url'], 'r');
-            if($filePointer) {
+            if ($filePointer) {
                 while (!feof($filePointer)) {
                     $text .= fread($filePointer, 4096);
                 }
@@ -175,8 +175,7 @@ class ModelBook extends Model
             }
 
             return $text;
-        }
-        else if(isset($data['text'])) {
+        } elseif (isset($data['text'])) {
             return $data['text'];
         }
 
@@ -185,7 +184,7 @@ class ModelBook extends Model
 
     public function getBookInputValid($input, array &$output): bool
     {
-        if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        if (filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -209,7 +208,7 @@ class ModelBook extends Model
             return null;
         }
 
-        if($book === false) {
+        if ($book === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Book not found"
@@ -226,7 +225,7 @@ class ModelBook extends Model
 
     public function saveBookInputValid($input, array &$output): bool
     {
-        if(!is_array($input)) {
+        if (!is_array($input)) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -234,7 +233,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(
+        if (
             !isset($input['book_id']) ||
             !isset($input["title"]) ||
             !isset($input["text"])
@@ -249,7 +248,7 @@ class ModelBook extends Model
         $book_id = trim($input['book_id']);
         $title = trim($input['title']);
 
-        if(
+        if (
             empty($book_id) ||
             empty($title)
         ) {
@@ -260,7 +259,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(filter_var($book_id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        if (filter_var($book_id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -268,7 +267,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(strlen($title) > Constants::MAX_BOOK_TITLE_LENGTH) {
+        if (strlen($title) > Constants::MAX_BOOK_TITLE_LENGTH) {
             $output = [
                 "status" => "Error",
                 "message" => "Title too long"
@@ -299,7 +298,7 @@ class ModelBook extends Model
             return null;
         }
 
-        if(!$isUpdate) {
+        if (!$isUpdate) {
             $output = [
                 "status" => "Error",
                 "message" => "No changes applied or access denied"
@@ -317,7 +316,7 @@ class ModelBook extends Model
 
     public function deleteBookValid($input, array &$output): bool
     {
-        if(!is_array($input)) {
+        if (!is_array($input)) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -325,7 +324,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(
+        if (
             !isset($input['book_id'])
         ) {
             $output = [
@@ -335,7 +334,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(filter_var($input['book_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        if (filter_var($input['book_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -364,7 +363,7 @@ class ModelBook extends Model
             return null;
         }
 
-        if(!$isDelete) {
+        if (!$isDelete) {
             $output = [
                 "status" => "Error",
                 "message" => "Not found or access denied"
@@ -398,7 +397,7 @@ class ModelBook extends Model
             return null;
         }
 
-        if(!$isRestore) {
+        if (!$isRestore) {
             $output = [
                 "status" => "Error",
                 "message" => "Not found or access denied"
@@ -415,7 +414,7 @@ class ModelBook extends Model
 
     public function getSharedBooksValid($input, array &$output): bool
     {
-        if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        if (filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -423,7 +422,7 @@ class ModelBook extends Model
             return false;
         }
 
-        if(CurrentUser::getUserId() == $input) {
+        if (CurrentUser::getUserId() == $input) {
             $output = [
                 "status" => "Error",
                 "message" => "Need to pass id another user"
@@ -447,7 +446,7 @@ class ModelBook extends Model
             return null;
         }
 
-        $output = array_map(fn(BookDTO $book) => [
+        $output = array_map(fn (BookDTO $book) => [
             "book_id" => $book->bookId,
             "title" => $book->title,
             "text" => $book->text,

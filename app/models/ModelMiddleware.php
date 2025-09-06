@@ -23,7 +23,7 @@ class ModelMiddleware extends Model
             return false;
         }
 
-        if($userId === null) {
+        if ($userId === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Unauthorized",
@@ -35,7 +35,8 @@ class ModelMiddleware extends Model
         return true;
     }
 
-    private function getBearerToken(): ?string {
+    private function getBearerToken(): ?string
+    {
         $headers = $this->getAuthorizationHeader();
 
         if (!empty($headers)) {
@@ -50,13 +51,11 @@ class ModelMiddleware extends Model
     {
         $headers = null;
 
-        if(isset($_SERVER['Authorization'])) {
+        if (isset($_SERVER['Authorization'])) {
             $headers = trim($_SERVER["Authorization"]);
-        }
-        else if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
-        }
-        else if(function_exists('apache_request_headers')) {
+        } elseif (function_exists('apache_request_headers')) {
             $requestHeaders = apache_request_headers();
             $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
             if (isset($requestHeaders['Authorization'])) {

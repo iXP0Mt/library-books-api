@@ -12,7 +12,7 @@ class ModelExternalBooks extends Model
 {
     public function saveInputValid($input, array &$output): bool
     {
-        if(!is_array($input)) {
+        if (!is_array($input)) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -20,7 +20,7 @@ class ModelExternalBooks extends Model
             return false;
         }
 
-        if(
+        if (
             !isset($input['external_book_id'])
         ) {
             $output = [
@@ -36,7 +36,7 @@ class ModelExternalBooks extends Model
     public function saveExternalBook(array $input, array &$output): bool
     {
         $externalBook = $this->externalSearchById($input['external_book_id']);
-        if($externalBook === null) {
+        if ($externalBook === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -61,19 +61,23 @@ class ModelExternalBooks extends Model
     private function externalSearchById(string $externalBookId): ?ExternalBookDTO
     {
         // id из GoogleApi состоит из цифр и букв, id из MIF состоит только из цифр
-        if(ctype_digit($externalBookId)) {
+        if (ctype_digit($externalBookId)) {
             return $this->searchMIFById($externalBookId);
         } else {
             $results = $this->searchGoogleApi($externalBookId);
 
-            if($results === null) return null;
+            if ($results === null) {
+                return null;
+            }
 
-            if(count($results) > 1) {
+            if (count($results) > 1) {
 
                 $this->filterResultGoogleAPIByCaseSensitiveId($results, $externalBookId);
             }
 
-            if(count($results) == 0) return null;
+            if (count($results) == 0) {
+                return null;
+            }
 
             return $results[0];
         }
@@ -87,10 +91,12 @@ class ModelExternalBooks extends Model
     {
         $url = "https://www.mann-ivanov-ferber.ru/datasource/ajax?resourceid=" . urlencode($externalBookId);
         $json = @file_get_contents($url);
-        if(!$json) return null;
+        if (!$json) {
+            return null;
+        }
 
         $data = json_decode($json, true);
-        if(!isset($data['bookData'])) {
+        if (!isset($data['bookData'])) {
             return null;
         }
 
@@ -107,13 +113,13 @@ class ModelExternalBooks extends Model
      */
     private function filterResultGoogleAPIByCaseSensitiveId(array &$results, string $correctExternalBookId): void
     {
-        $results = array_filter($results, fn(ExternalBookDTO $item) => $item->externalBookId === $correctExternalBookId);
+        $results = array_filter($results, fn (ExternalBookDTO $item) => $item->externalBookId === $correctExternalBookId);
         $results = array_values($results);
     }
 
     public function isValid(array &$output): bool
     {
-        if(
+        if (
             !isset($_GET['q'])
         ) {
             $output = [
@@ -136,7 +142,7 @@ class ModelExternalBooks extends Model
         $booksGoogleApi = $this->searchGoogleApi($q);
         $booksMIF = $this->searchMIF($q);
 
-        if($booksGoogleApi === null && $booksMIF === null) {
+        if ($booksGoogleApi === null && $booksMIF === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Results is empty"
@@ -146,7 +152,7 @@ class ModelExternalBooks extends Model
 
         $books = array_merge($booksGoogleApi, $booksMIF);
 
-        $output['items'] = array_map(fn(ExternalBookDTO $book) => [
+        $output['items'] = array_map(fn (ExternalBookDTO $book) => [
             "external_book_id" => $book->externalBookId,
             "title" => $book->title,
             "text" => $book->text,
@@ -162,14 +168,16 @@ class ModelExternalBooks extends Model
     {
         $url = "https://www.googleapis.com/books/v1/volumes?q=" . urlencode($q);
         $json = @file_get_contents($url);
-        if(!$json) return null;
-
-        $data = json_decode($json, true);
-        if(!isset($data['items'])) {
+        if (!$json) {
             return null;
         }
 
-        return array_map(fn($item) => new ExternalBookDTO(
+        $data = json_decode($json, true);
+        if (!isset($data['items'])) {
+            return null;
+        }
+
+        return array_map(fn ($item) => new ExternalBookDTO(
             externalBookId: $item['id'],
             title: $item['volumeInfo']['title'] ?? "Untitled",
             text: $item['volumeInfo']['description'] ?? $item['volumeInfo']['canonicalVolumeLink'] ?? null,
@@ -184,14 +192,16 @@ class ModelExternalBooks extends Model
     {
         $url = "https://www.mann-ivanov-ferber.ru/book/search.ajax?q=" . urlencode($q);
         $json = @file_get_contents($url);
-        if(!$json) return null;
-
-        $data = json_decode($json, true);
-        if(!isset($data['total']) || $data['total'] == 0) {
+        if (!$json) {
             return null;
         }
 
-        return array_map(fn($item) => new ExternalBookDTO(
+        $data = json_decode($json, true);
+        if (!isset($data['total']) || $data['total'] == 0) {
+            return null;
+        }
+
+        return array_map(fn ($item) => new ExternalBookDTO(
             externalBookId: $item['id'],
             title: $item['title'],
             text: $item['url']

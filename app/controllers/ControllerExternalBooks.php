@@ -18,13 +18,13 @@ class ControllerExternalBooks extends Controller
     {
         $output = [];
         $isSuccess = $this->model->isValid($output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->externalSearch($this->model->getSearchQuery(), $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::NOT_FOUND);
             return;
         }
@@ -39,13 +39,13 @@ class ControllerExternalBooks extends Controller
         $output = [];
 
         $isSuccess = $this->model->saveInputValid($input, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->saveExternalBook($input, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }

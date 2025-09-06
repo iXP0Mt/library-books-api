@@ -18,13 +18,13 @@ class ControllerBook extends Controller
     {
         $output = [];
         $isSuccess = $this->model->validUserBooks($output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }
 
         $isSuccess = $this->model->getUserBooks($output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }
@@ -39,13 +39,13 @@ class ControllerBook extends Controller
         $output = [];
 
         $data = $this->model->validateCreateBook($input, $output);
-        if($data === null) {
+        if ($data === null) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->createBook($data, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }
@@ -58,16 +58,16 @@ class ControllerBook extends Controller
         $output = [];
 
         $isSuccess = $this->model->getBookInputValid($bookId, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->getUsersBookById((int)$bookId, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
-        } else if($isSuccess === false) {
+        } elseif ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::NOT_FOUND);
             return;
         }
@@ -82,16 +82,16 @@ class ControllerBook extends Controller
         $output = [];
 
         $isSuccess = $this->model->saveBookInputValid($input, $output);
-        if($isSuccess === false) {
+        if ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->saveEditedBook($input, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
-        } else if($isSuccess === false) {
+        } elseif ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
@@ -106,16 +106,16 @@ class ControllerBook extends Controller
         $output = [];
 
         $isSuccess = $this->model->deleteBookValid($input, $output);
-        if($isSuccess === false) {
+        if ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->deleteUsersBook($input, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
-        } else if ($isSuccess === false) {
+        } elseif ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
@@ -130,16 +130,16 @@ class ControllerBook extends Controller
         $output = [];
 
         $isSuccess = $this->model->restoreBookValid($input, $output);
-        if($isSuccess === false) {
+        if ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->restoreDeletedBook($input, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
-        } else if($isSuccess === false) {
+        } elseif ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
@@ -152,13 +152,13 @@ class ControllerBook extends Controller
         $output = [];
 
         $isSuccess = $this->model->getSharedBooksValid($userId, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->getSharedBooksByOwner((int)$userId, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }

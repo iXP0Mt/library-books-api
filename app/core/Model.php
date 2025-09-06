@@ -4,5 +4,4 @@ namespace app\core;
 
 abstract class Model
 {
-
 }

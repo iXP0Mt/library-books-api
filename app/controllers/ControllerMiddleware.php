@@ -18,7 +18,7 @@ class ControllerMiddleware extends Controller
     {
         $output = [];
         $isSuccess = $this->model->checkAccess($output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::UNAUTHORIZED);
             return;
         }

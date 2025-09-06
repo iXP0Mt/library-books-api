@@ -8,5 +8,6 @@ readonly class UserDTO
         public int $id,
         public string $login,
         public string $hashPassword,
-    ) {}
+    ) {
+    }
 }

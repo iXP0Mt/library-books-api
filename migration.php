@@ -36,8 +36,9 @@ function getNamesMigrationsFromDB(): array
         $stmt->execute();
 
         $result = [];
-        if($stmt->rowCount() > 0)
+        if ($stmt->rowCount() > 0) {
             $result = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        }
 
     } catch (PDOException $e) {
         echo "ERROR: " . $e->getMessage();
@@ -51,7 +52,7 @@ function getMigrationFilesToMigrate(): array
 {
     $filesMigrations = getMigrationFiles();
 
-    if(isFirstMigration()) {
+    if (isFirstMigration()) {
         return $filesMigrations;
     }
 
@@ -92,13 +93,13 @@ function handler(): void
 {
     $filesToMigrate = getMigrationFilesToMigrate();
 
-    if(empty($filesToMigrate)) {
+    if (empty($filesToMigrate)) {
         echo 'No new migrations';
         return;
     }
 
-    foreach($filesToMigrate as $file) {
-        if(migrate($file)) {
+    foreach ($filesToMigrate as $file) {
+        if (migrate($file)) {
             $name = pathinfo($file, PATHINFO_FILENAME);
             addMigrationLog($name);
             echo 'Migration ' . $name . ' was applied!' . PHP_EOL;

@@ -9,5 +9,6 @@ readonly class BookDTO
         public ?string $title = null,
         public ?int $ownerUserId = null,
         public ?string $text = null,
-    ) {}
+    ) {
+    }
 }

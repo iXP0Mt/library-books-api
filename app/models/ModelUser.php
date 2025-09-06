@@ -13,7 +13,7 @@ class ModelUser extends Model
 {
     public function shareValid($input, array &$output): ?bool
     {
-        if(filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
+        if (filter_var($input, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -24,7 +24,7 @@ class ModelUser extends Model
 
         $ownerUserId = CurrentUser::getUserId();
 
-        if($ownerUserId === null) {
+        if ($ownerUserId === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Server error"
@@ -32,7 +32,7 @@ class ModelUser extends Model
             return null;
         }
 
-        if($ownerUserId == $input) {
+        if ($ownerUserId == $input) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -56,7 +56,7 @@ class ModelUser extends Model
             return ShareResult::SERVER_ERROR;
         }
 
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -64,7 +64,7 @@ class ModelUser extends Model
             return ShareResult::INVALID_USER;
         }
 
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             $output = [
                 "status" => "Error",
                 "message" => "Access already granted"
@@ -93,10 +93,11 @@ class ModelUser extends Model
         }
 
         $output['users'] = array_map(
-            fn(UserDTO $user) => [
+            fn (UserDTO $user) => [
                 "user_id" => $user->id,
                 "login" => $user->login
-            ], $users
+            ],
+            $users
         );
         return true;
     }

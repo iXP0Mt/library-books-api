@@ -20,13 +20,13 @@ class ControllerLogin extends Controller
         $output = [];
 
         $isSuccess = $this->model->isValid($input, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->login($input, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::UNAUTHORIZED);
             return;
         }

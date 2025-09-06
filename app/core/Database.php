@@ -13,8 +13,7 @@ class Database
     public static function pdo(): PDO
     {
         static $pdo;
-        if(!$pdo)
-        {
+        if (!$pdo) {
             $dsn = 'mysql:dbname='.$_ENV['DB_NAME'].';host='.$_ENV['DB_HOST'].';charset=utf8';
             $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -33,7 +32,7 @@ class Database
             return (int)self::pdo()->lastInsertId();
 
         } catch (PDOException $e) {
-            if($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062) {
                 return 0;
             }
 
@@ -48,7 +47,7 @@ class Database
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($row === false) {
+        if ($row === false) {
             return null;
         }
 
@@ -80,9 +79,9 @@ class Database
             $stmt->bindValue(':grantee_user_id', $granteeUserId, PDO::PARAM_INT);
             $stmt->execute();
         } catch (PDOException $e) {
-            if(self::isDuplicateEntry($e)) {
+            if (self::isDuplicateEntry($e)) {
                 return false;
-            } else if(self::isConstraintFailure($e)) {
+            } elseif (self::isConstraintFailure($e)) {
                 return null;
             }
             throw $e;
@@ -144,7 +143,7 @@ class Database
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($row === false) {
+        if ($row === false) {
             return false;
         }
 
@@ -175,7 +174,7 @@ class Database
         $stmt->execute();
 
         $affectedRows = $stmt->rowCount();
-        if($affectedRows == 0) {
+        if ($affectedRows == 0) {
             return false;
         }
 
@@ -190,7 +189,7 @@ class Database
         $stmt->execute();
 
         $affectedRows = $stmt->rowCount();
-        if($affectedRows == 0) {
+        if ($affectedRows == 0) {
             return false;
         }
 
@@ -205,7 +204,7 @@ class Database
         $stmt->execute();
 
         $affectedRows = $stmt->rowCount();
-        if($affectedRows == 0) {
+        if ($affectedRows == 0) {
             return false;
         }
 
@@ -239,7 +238,7 @@ class Database
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(fn($row) => new BookDTO(
+        return array_map(fn ($row) => new BookDTO(
             bookId: $row['book_id'],
             title: $row['title'],
             text: $row['text'],

@@ -21,16 +21,16 @@ class ControllerRegistration extends Controller
         $output = [];
 
         $isSuccess = $this->model->isValid($input, $output);
-        if(!$isSuccess) {
+        if (!$isSuccess) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $isSuccess = $this->model->registration($input, $output);
-        if($isSuccess === false) {
+        if ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::CONFLICT);
             return;
-        } else if($isSuccess === null) {
+        } elseif ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }

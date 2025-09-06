@@ -12,7 +12,7 @@ class ModelRegistration extends Model
 {
     public function isValid($data, array &$output): bool
     {
-        if(!is_array($data)) {
+        if (!is_array($data)) {
             $output = [
                 "status" => "Error",
                 "message" => "Incorrect input data"
@@ -20,7 +20,7 @@ class ModelRegistration extends Model
             return false;
         }
 
-        if(
+        if (
             !isset($data['login']) ||
             !isset($data['password']) ||
             !isset($data['password_confirm'])
@@ -36,7 +36,7 @@ class ModelRegistration extends Model
         $password = trim($data['password']);
         $password_confirm = trim($data['password_confirm']);
 
-        if(
+        if (
             empty($login) ||
             empty($password) ||
             empty($password_confirm)
@@ -48,7 +48,7 @@ class ModelRegistration extends Model
             return false;
         }
 
-        if(strlen($login) < 3 || strlen($login) > 64) {
+        if (strlen($login) < 3 || strlen($login) > 64) {
             $output =  [
                 "status" => "Error",
                 "message" => "Login must be between 3 and 64 characters"
@@ -56,7 +56,7 @@ class ModelRegistration extends Model
             return false;
         }
 
-        if(!preg_match("/^[a-zA-Z0-9]*$/", $login)) {
+        if (!preg_match("/^[a-zA-Z0-9]*$/", $login)) {
             $output =  [
                 "status" => "Error",
                 "message" => "Login must be contain only letters, numbers and underscores"
@@ -64,7 +64,7 @@ class ModelRegistration extends Model
             return false;
         }
 
-        if(strlen($password) < 8 || strlen($password) > 64) {
+        if (strlen($password) < 8 || strlen($password) > 64) {
             $output =  [
                 "status" => "Error",
                 "message" => "Password must be between 8 and 64 characters"
@@ -72,7 +72,7 @@ class ModelRegistration extends Model
             return false;
         }
 
-        if($password !== $password_confirm) {
+        if ($password !== $password_confirm) {
             $output =  [
                 "status" => "Error",
                 "message" => "Passwords do not match"
@@ -98,7 +98,7 @@ class ModelRegistration extends Model
             return null;
         }
 
-        if($result === 0) {
+        if ($result === 0) {
             $output = [
                 "status" => "Error",
                 "message" => "Login already taken"

@@ -19,7 +19,7 @@ class ControllerUser extends Controller
     {
         $output = [];
         $result = $this->model->getListUsers($output);
-        if($result === false) {
+        if ($result === false) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
         }
@@ -31,17 +31,16 @@ class ControllerUser extends Controller
     {
         $output = [];
         $isSuccess = $this->model->shareValid($granteeUserId, $output);
-        if($isSuccess === null) {
+        if ($isSuccess === null) {
             View::renderToJson($output, HttpStatus::SERVER_ERROR);
             return;
-        } else if($isSuccess === false) {
+        } elseif ($isSuccess === false) {
             View::renderToJson($output, HttpStatus::BAD_REQUEST);
             return;
         }
 
         $shareResult = $this->model->shareAccessToLibrary((int)$granteeUserId, $output);
-        $httpStatus = match ($shareResult)
-        {
+        $httpStatus = match ($shareResult) {
             ShareResult::GRANTED => HttpStatus::OK,
             ShareResult::ALREADY_GRANTED => HttpStatus::CONFLICT,
             ShareResult::INVALID_USER => HttpStatus::BAD_REQUEST,

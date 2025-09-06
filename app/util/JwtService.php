@@ -21,11 +21,11 @@ class JwtService
     public static function getUserId(string $token): ?int
     {
         $payload = [];
-        if(!self::validToken($token, $payload)) {
+        if (!self::validToken($token, $payload)) {
             return null;
         }
 
-        if(!isset($payload['sub'])) {
+        if (!isset($payload['sub'])) {
             return null;
         }
 
@@ -36,11 +36,11 @@ class JwtService
     {
         $payload = self::decodeToken($token);
 
-        if(!isset($payload['exp'])) {
+        if (!isset($payload['exp'])) {
             return false;
         }
 
-        if($payload['exp'] < time()) {
+        if ($payload['exp'] < time()) {
             return false;
         }
 
