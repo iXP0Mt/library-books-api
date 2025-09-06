@@ -124,10 +124,11 @@ class Database
 
     public static function selectUsersBookByBookId(int $bookId, int $ownerUserId): BookDTO|false
     {
-        $stmt = self::pdo()->prepare('
+        $stmt = self::pdo()->prepare("
             SELECT b.title, b.text 
             FROM books b
-            WHERE b.book_id = :book_id 
+            WHERE b.book_id = :book_id
+              AND b.is_deleted = '0'
 	            AND (
 	                b.owner_user_id = :owner_user_id 
                         OR EXISTS(
@@ -137,7 +138,7 @@ class Database
                                 AND s.grantee_user_id
                         )
 	                );
-        ');
+        ");
         $stmt->bindValue(':book_id', $bookId);
         $stmt->bindValue(':owner_user_id', $ownerUserId);
         $stmt->execute();
@@ -155,7 +156,7 @@ class Database
 
     public static function updateBook(BookDTO $editedBook): bool
     {
-        $stmt = self::pdo()->prepare('
+        $stmt = self::pdo()->prepare("
             UPDATE books b
             SET 
 	            b.title = :edited_title,
@@ -163,8 +164,10 @@ class Database
             WHERE
 	            b.book_id = :book_id
             AND 
-                b.owner_user_id = :owner_user_id;
-        ');
+                b.owner_user_id = :owner_user_id
+            AND
+                b.is_deleted = '0';
+        ");
         $stmt->bindValue(':edited_title', $editedBook->title);
         $stmt->bindValue(':edited_text', $editedBook->text);
         $stmt->bindValue(':book_id', $editedBook->bookId);
